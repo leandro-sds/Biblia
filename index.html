@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bíblia Sagrada</title>
+  <meta name="description" content="Explore a Bíblia Sagrada de forma interativa. Busque versículos, navegue por livros e capítulos, e fortaleça sua fé com a Palavra de Deus.">
+  <meta name="author" content="Leandro Souza">
+
+  <!-- PWA: ícone e cor da barra de status no celular -->
+  <meta name="theme-color" content="#0056b3">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Bíblia">
+
+  <!-- PWA: manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Ícones para iOS (que não lê o manifest) -->
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <img src="logo_biblia.png" alt="Logo Bíblia Interativa">
+    <h1>Bíblia Sagrada</h1>
+  </header>
+
+  <main>
+    <section id="boas-vindas">
+      <h2>Bem-vindo(a) à Bíblia Interativa</h2>
+      <p>A Palavra de Deus — viva, poderosa, dinâmica e sempre ao seu alcance.</p>
+      <p>Aqui você pode explorar as Escrituras de forma prática e intuitiva:</p>
+      <ul>
+        <li>🔍 Pesquise por palavras-chave ou frases específicas</li>
+        <li>📚 Navegue diretamente por livro e capítulo</li>
+      </ul>
+      <p>Que essa jornada fortaleça sua fé e ilumine seu caminho!</p>
+    </section>
+
+    <!-- Aviso de instalação (aparece só quando possível instalar) -->
+    <div id="aviso-instalar" role="alert" aria-live="polite" style="display:none; background:#e8f4fd; border:2px solid #0056b3; border-radius:8px; padding:14px; margin-bottom:16px;">
+      <p style="margin:0 0 8px 0; font-weight:bold;">📲 Instalar como aplicativo</p>
+      <p style="margin:0 0 10px 0;">Instale a Bíblia no seu celular para acessar offline, sem precisar do navegador!</p>
+      <button id="btn-instalar" aria-label="Instalar Bíblia Sagrada como aplicativo">Instalar agora</button>
+      <button id="btn-fechar-aviso" style="background:#888; border-color:#555;" aria-label="Fechar aviso de instalação">Agora não</button>
+    </div>
+
+    <section id="busca" class="ferramentas-container">
+      <label for="versao-biblia">Versão:</label>
+      <div style="display: inline-block; margin-bottom: 15px;">
+        <select id="versao-biblia" aria-label="Selecione a versão da Bíblia na lista e clique em Carregar"></select>
+        <button id="btn-carregar-versao">Carregar versão</button>
+      </div>
+      <hr style="margin: 5px 0 20px 0; border: 0; border-top: 1px solid #eee;">
+
+      <label for="busca-palavra">Buscar na Bíblia:</label>
+      <input type="text" id="busca-palavra" placeholder="Digite uma palavra ou frase" aria-label="Digite uma palavra ou frase para buscar">
+      <button id="buscarTexto">Buscar</button>
+
+      <label for="livro">Livro:</label>
+      <select id="livro" aria-label="Selecione um livro"></select>
+
+      <label for="capitulo">Capítulo:</label>
+      <select id="capitulo" aria-label="Selecione um capítulo"></select>
+      <button id="carregarCapitulo">Carregar capítulo</button>
+    </section>
+
+    <section id="versiculos-container" aria-live="polite" aria-label="Versículos"></section>
+  </main>
+
+  <footer id="rodape">
+    <p>Volte sempre a esta página, pois a Palavra de Deus se renova a cada dia.</p>
+    <p class="citacao">
+      "As misericórdias do Senhor são a causa de não sermos consumidos, porque as suas misericórdias não têm fim; renovam-se cada manhã. Grande é a tua fidelidade."<br>
+      — <strong>Lamentações 3:22-23</strong>
+    </p>
+  </footer>
+
+  <div class="radio-link">
+    <a href="https://www.maioramor.com.br" target="_blank" rel="noopener">Ouça a Rádio Maior Amor</a>
+  </div>
+
+  <script src="script.js"></script>
+
+  <!-- Registro do Service Worker (habilita modo offline e instalação) -->
+  <script>
+    // Registro do Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('[PWA] Service Worker registrado com sucesso.'))
+        .catch(err => console.error('[PWA] Erro ao registrar Service Worker:', err));
+    }
+
+    // Botão "Instalar como app"
+    let promptInstalacao = null;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      promptInstalacao = e;
+      document.getElementById('aviso-instalar').style.display = 'block';
+    });
+
+    document.getElementById('btn-instalar').addEventListener('click', () => {
+      if (promptInstalacao) {
+        promptInstalacao.prompt();
+        promptInstalacao.userChoice.then(() => {
+          document.getElementById('aviso-instalar').style.display = 'none';
+          promptInstalacao = null;
+        });
+      }
+    });
+
+    document.getElementById('btn-fechar-aviso').addEventListener('click', () => {
+      document.getElementById('aviso-instalar').style.display = 'none';
+    });
+  </script>
+</body>
+</html>
